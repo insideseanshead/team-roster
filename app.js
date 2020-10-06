@@ -13,31 +13,96 @@ const render = require("./lib/htmlRenderer");
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-function employeeProfile() {
-    inquirer.prompt(
+
+//Array of Questions
+
+const questions = [
         {
-        type: 'input',
-        name: 'name',
-        message: 'What is your name?'
-    },
-    {
-        type: "input",
-        name: 'id',
-        message: 'What is your company ID?'
-    },
-    {
-        type: 'input',
-        name: 'email',
-        message: 'What is your email?'
-    },
-    {
-        type: 'list',
-        name: "role",
-        message: "what is your role?",
-        choices: ["employee", "manager", "engineer", "intern" ]
-    }
-    )
-}
+            type: 'input',
+            name: 'name',
+            message: 'What is your name?'
+        },
+        {
+            type: "input",
+            name: 'id',
+            message: 'What is your company ID?'
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'What is your email?'
+        },
+        {
+            type: 'list',
+            name: "role",
+            message: "what is your role?",
+            choices: ["Manager", "Engineer", "Intern"]
+        },
+        {
+            type: 'input',
+            name: 'officeNumber',
+            message: 'What is your office number?',
+            when: function (response) {
+                return response.roll === "Manager"; 
+            }
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: 'What is your github?',
+            when: function(response) {
+                return response.roll === "Engineer";
+            }
+        },
+        {
+            type: 'input',
+            name: 'school',
+            message: 'Where did you go to school?',
+            when: function(response) {
+                return response.roll === "Intern";
+            }
+        }
+    ]
+
+// function employeeProfile() {
+//     inquirer.prompt(
+//         {
+//         type: 'input',
+//         name: 'name',
+//         message: 'What is your name?'
+//     },
+//     {
+//         type: "input",
+//         name: 'id',
+//         message: 'What is your company ID?'
+//     },
+//     {
+//         type: 'input',
+//         name: 'email',
+//         message: 'What is your email?'
+//     },
+//     {
+//         type: 'list',
+//         name: "role",
+//         message: "what is your role?",
+//         choices: ["employee", "manager", "engineer", "intern"]
+//     }
+//     ).then(function({roles}){
+//         switch (choice) {
+//             case "Manager":
+//                 createManager();
+//                 break;
+
+//             case "Engineer":
+//                 createEngineer();
+//                 break;
+            
+//             case "intern":
+//                 createIntern();
+//                 break;
+//         }
+//     })
+// }
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
