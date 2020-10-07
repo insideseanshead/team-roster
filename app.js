@@ -9,6 +9,7 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+const { fips } = require("crypto");
 
 const employeeArray = [];
 
@@ -16,49 +17,6 @@ const employeeArray = [];
 // and to create objects for each team member (using the correct classes as blueprints!)
 
 //Array of Questions
-
-const questions = [
-  {
-    type: "input",
-    name: "name",
-    message: "What is your name?",
-  },
-  {
-    type: "input",
-    name: "id",
-    message: "What is your company ID?",
-  },
-  {
-    type: "input",
-    name: "email",
-    message: "What is your email?",
-  },
-
-  {
-    type: "input",
-    name: "office",
-    message: "What is your office number?",
-    when: function (response) {
-      return response.role === "Manager";
-    },
-  },
-  {
-    type: "input",
-    name: "github",
-    message: "What is your github?",
-    when: function (response) {
-      return response.role === "Engineer";
-    },
-  },
-  {
-    type: "input",
-    name: "school",
-    message: "Where did you go to school?",
-    when: function (response) {
-      return response.role === "Intern";
-    },
-  },
-];
 
 generateEmployee();
 
@@ -80,7 +38,7 @@ function generateEmployee() {
           createEngineer();
           break;
 
-        case "intern":
+        case "Intern":
           createIntern();
           break;
 
@@ -115,15 +73,104 @@ function createManager() {
       },
     ])
     .then((response) => {
-      const newManager = new Manager(response.name, response.id, response.email, response.office);
-      console.log(newManager)
+      const newManager = new Manager(
+        response.name,
+        response.id,
+        response.email,
+        response.office
+      );
+      console.log(newManager);
       employeeArray.push(newManager);
+    //   console.log(employeeArray);
+      generateEmployee()
     });
 }
 
+function createIntern() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "What is your name?",
+      },
+      {
+        type: "input",
+        name: "id",
+        message: "What is your company ID?",
+      },
+      {
+        type: "input",
+        name: "email",
+        message: "What is your email?",
+      },
+      {
+        type: "input",
+        name: "school",
+        message: "Where did you go to school?",
+      },
+    ])
+    .then((response) => {
+      const newIntern = new Intern(
+        response.name,
+        response.id,
+        response.email,
+        response.school
+      );
+      console.log(newIntern);
+      employeeArray.push(newIntern);
+    //   console.log(employeeArray);
+      generateEmployee()
+    });
+}
 
+function createEngineer() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "What is your name?",
+      },
+      {
+        type: "input",
+        name: "id",
+        message: "What is your company ID?",
+      },
+      {
+        type: "input",
+        name: "email",
+        message: "What is your email?",
+      },
+      {
+        type: "input",
+        name: "github",
+        message: "What is your github?",
+      },
+    ])
+    .then((response) => {
+      const newEngineer = new Engineer(
+        response.name,
+        response.id,
+        response.email,
+        response.github
+      );
+      console.log(newEngineer);
+      employeeArray.push(newEngineer);
+    //   console.log(employeeArray);
+      generateEmployee()
+    });
+}
 
-// 
+function buildTeam(){
+    if(!fs.existsSync(OUTPUT_DIR)){
+        fs.mkdirSync(OUTPUT_DIR)
+    }
+
+   fs.writeFileSync(outputPath, render(employeeArray), "utf-8")  
+}
+
+//
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
