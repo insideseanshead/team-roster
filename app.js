@@ -10,6 +10,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const employeeArray = [];
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
@@ -17,92 +18,112 @@ const render = require("./lib/htmlRenderer");
 //Array of Questions
 
 const questions = [
-        {
-            type: 'input',
-            name: 'name',
-            message: 'What is your name?'
-        },
-        {
-            type: "input",
-            name: 'id',
-            message: 'What is your company ID?'
-        },
-        {
-            type: 'input',
-            name: 'email',
-            message: 'What is your email?'
-        },
-        {
-            type: 'list',
-            name: "role",
-            message: "what is your role?",
-            choices: ["Manager", "Engineer", "Intern"]
-        },
-        {
-            type: 'input',
-            name: 'officeNumber',
-            message: 'What is your office number?',
-            when: function (response) {
-                return response.roll === "Manager"; 
-            }
-        },
-        {
-            type: 'input',
-            name: 'github',
-            message: 'What is your github?',
-            when: function(response) {
-                return response.roll === "Engineer";
-            }
-        },
-        {
-            type: 'input',
-            name: 'school',
-            message: 'Where did you go to school?',
-            when: function(response) {
-                return response.roll === "Intern";
-            }
-        }
-    ]
+  {
+    type: "input",
+    name: "name",
+    message: "What is your name?",
+  },
+  {
+    type: "input",
+    name: "id",
+    message: "What is your company ID?",
+  },
+  {
+    type: "input",
+    name: "email",
+    message: "What is your email?",
+  },
 
-// function employeeProfile() {
-//     inquirer.prompt(
-//         {
-//         type: 'input',
-//         name: 'name',
-//         message: 'What is your name?'
-//     },
-//     {
-//         type: "input",
-//         name: 'id',
-//         message: 'What is your company ID?'
-//     },
-//     {
-//         type: 'input',
-//         name: 'email',
-//         message: 'What is your email?'
-//     },
-//     {
-//         type: 'list',
-//         name: "role",
-//         message: "what is your role?",
-//         choices: ["employee", "manager", "engineer", "intern"]
-//     }
-//     ).then(function({roles}){
-//         switch (choice) {
-//             case "Manager":
-//                 createManager();
-//                 break;
+  {
+    type: "input",
+    name: "office",
+    message: "What is your office number?",
+    when: function (response) {
+      return response.role === "Manager";
+    },
+  },
+  {
+    type: "input",
+    name: "github",
+    message: "What is your github?",
+    when: function (response) {
+      return response.role === "Engineer";
+    },
+  },
+  {
+    type: "input",
+    name: "school",
+    message: "Where did you go to school?",
+    when: function (response) {
+      return response.role === "Intern";
+    },
+  },
+];
 
-//             case "Engineer":
-//                 createEngineer();
-//                 break;
-            
-//             case "intern":
-//                 createIntern();
-//                 break;
-//         }
-//     })
-// }
+generateEmployee();
+
+function generateEmployee() {
+  inquirer
+    .prompt({
+      type: "list",
+      name: "role",
+      message: "what is your role?",
+      choices: ["Manager", "Engineer", "Intern", "Quit"],
+    })
+    .then(function ({ role }) {
+      switch (role) {
+        case "Manager":
+          createManager();
+          break;
+
+        case "Engineer":
+          createEngineer();
+          break;
+
+        case "intern":
+          createIntern();
+          break;
+
+        default:
+          buildTeam();
+      }
+    });
+}
+
+function createManager() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "What is your name?",
+      },
+      {
+        type: "input",
+        name: "id",
+        message: "What is your company ID?",
+      },
+      {
+        type: "input",
+        name: "email",
+        message: "What is your email?",
+      },
+      {
+        type: "input",
+        name: "office",
+        message: "What is your office number?",
+      },
+    ])
+    .then((response) => {
+      const newManager = new Manager(response.name, response.id, response.email, response.office);
+      console.log(newManager)
+      employeeArray.push(newManager);
+    });
+}
+
+
+
+// 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
@@ -121,4 +142,4 @@ const questions = [
 // and Intern classes should all extend from a class named Employee; see the directions
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
+// for the provided `render` function to work!
